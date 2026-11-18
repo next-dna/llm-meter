@@ -102,7 +102,7 @@ export function compareUsage(events: UsageEvent[]): UsageComparison[] {
 
   const result: UsageComparison[] = [];
   for (const list of groups.values()) {
-    list.sort((a, b) => (a.ts < b.ts ? -1 : a.ts > b.ts ? 1 : 0));
+    list.sort((a, b) => a.ts.localeCompare(b.ts));
     const latest = list[list.length - 1]!;
     const prev = list.length > 1 ? list[list.length - 2]! : undefined;
     result.push({
@@ -116,16 +116,8 @@ export function compareUsage(events: UsageEvent[]): UsageComparison[] {
     });
   }
 
-  result.sort((a, b) =>
-    a.provider === b.provider
-      ? a.kind < b.kind
-        ? -1
-        : a.kind > b.kind
-          ? 1
-          : 0
-      : a.provider < b.provider
-        ? -1
-        : 1,
+  result.sort(
+    (a, b) => a.provider.localeCompare(b.provider) || a.kind.localeCompare(b.kind),
   );
   return result;
 }
